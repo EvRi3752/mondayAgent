@@ -23,6 +23,22 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
 
+      - name: Validate Notion secret format
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: |
+          if [ -z "$NOTION_TOKEN" ]; then
+            echo "NOTION_TOKEN is empty or unavailable to this workflow."
+            exit 1
+          fi
+          case "$NOTION_TOKEN" in
+            NOTION_TOKEN=*|\"*|\'*|*\ *|*$'\n'*)
+              echo "NOTION_TOKEN must contain only the raw token, without NOTION_TOKEN=, quotes, or whitespace."
+              exit 1
+              ;;
+          esac
+          echo "NOTION_TOKEN is present and has the expected format."
+
       - name: Send daily reminder
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
