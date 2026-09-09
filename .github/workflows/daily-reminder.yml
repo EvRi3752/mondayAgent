@@ -8,6 +8,7 @@ on:
 jobs:
   send-reminder:
     runs-on: ubuntu-latest
+    environment: prod
     timeout-minutes: 5
 
     steps:
